@@ -25,6 +25,12 @@ def create_app(config_name):
 
   @login_manager.user_loader
   def load_user(user_id):
+      """
+      Load the user with the specified user_id from the database.
+
+      Args:
+          user_id: write your description
+      """
     # since the user_id is just the primary key of our user table,
     # use it in the query for the user
     return DB.query(User).get(int(user_id))
