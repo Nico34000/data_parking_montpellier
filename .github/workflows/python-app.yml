@@ -52,7 +52,6 @@ jobs:
         cd docs/
         make html
     
-
     - name: Commit files
       run: |
         echo ${{ github.ref }}
@@ -79,3 +78,15 @@ jobs:
         DATABASE_SQL: ${{ secrets.DATABASE_SQL }}
       run: |
         pytest tests
+
+    # - run: |
+    #     git fetch --prune --unshallow
+
+    - name: Deploy to heroku
+      env:
+        HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
+        HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+      if: github.ref == 'refs/heads/main' && job.status == 'success'
+      run: |
+        git remote add heroku https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git
+        git push heroku main -f
